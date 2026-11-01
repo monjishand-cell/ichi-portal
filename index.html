@@ -3,52 +3,137 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>一先生ポータル</title>
+  <title>一先生ポータル｜ICHI SENSEI STUDY PORTAL</title>
+  <meta name="description" content="ICHI SENSEI STUDY PORTAL（一先生ポータル）">
   <meta name="theme-color" content="#1a3a5c">
-  <!-- iPhone：ホーム画面から開いたときにアプリのように全画面で表示 -->
+
+  <!-- Web App Manifest（相対パスなので GitHub Pages のサブディレクトリでも動きます） -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- アイコン -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+  <!-- iPhone：ホーム画面から開いたとき、アドレスバーのない独立した画面で表示 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="一先生">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="icon-180.png">
-  <link rel="icon" type="image/png" href="icon-192.png">
-  <link rel="manifest" href="manifest.json">
+  <!-- 画面最上部（時計などのステータスバー）まで紺色で塗りつぶす -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+
   <style>
-    html, body { margin: 0; height: 100%; background: #f7f5f0; }
-    body { padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left); box-sizing: border-box; }
-    iframe { display: block; width: 100%; height: 100%; border: 0; }
+    :root { --navy: #1a3a5c; --wine: #5c1e34; --paper: #f7f5f0; --beige: #e8d6be; }
+    html, body { margin: 0; height: 100%; }
+    html { background: var(--paper); }
+    body {
+      /* 上の安全領域（ノッチ・ステータスバー）は紺、下（ホームバー）は本体と同じ生成り色 */
+      background: linear-gradient(to bottom, var(--navy) 0 50%, var(--paper) 50% 100%);
+      display: flex; flex-direction: column;
+      height: 100vh; height: 100dvh;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      box-sizing: border-box;
+      overflow: hidden;
+      overscroll-behavior: none;          /* 引っぱって再読み込み・バウンドを抑える */
+      -webkit-tap-highlight-color: transparent;
+    }
+    iframe { display: block; flex: 1 1 auto; width: 100%; min-height: 0; border: 0; background: var(--paper); }
+
     #loading {
-      position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
-      background: linear-gradient(135deg, #1a3a5c, #5c1e34); color: #fff;
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background: linear-gradient(135deg, var(--navy), var(--wine)); color: #fff;
       font-family: "Hiragino Mincho ProN", "Noto Serif JP", serif; transition: opacity .4s;
     }
     #loading img { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 8px 24px rgba(0,0,0,.3); }
-    #loading .dot { width: 8px; height: 8px; border-radius: 50%; background: #e8d6be; display: inline-block; margin: 0 4px; animation: b 1s infinite alternate; }
+    #loading .en { font-family: system-ui, sans-serif; font-size: 11px; letter-spacing: .25em; opacity: .75; }
+    #loading .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--beige); display: inline-block; margin: 0 4px; animation: b 1s infinite alternate; }
     #loading .dot:nth-child(2) { animation-delay: .2s; } #loading .dot:nth-child(3) { animation-delay: .4s; }
     @keyframes b { to { opacity: .2; transform: translateY(-4px); } }
     #loading.hide { opacity: 0; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) { #loading .dot { animation: none; } }
+
+    /* 通信が切れたときの小さなお知らせ */
+    #net {
+      position: fixed; left: 50%; transform: translateX(-50%); z-index: 20;
+      bottom: calc(env(safe-area-inset-bottom) + 16px);
+      max-width: calc(100% - 32px); box-sizing: border-box;
+      padding: 10px 16px; border-radius: 999px; font: 14px/1.4 system-ui, sans-serif;
+      background: #2b2b2b; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.25);
+      display: none;
+    }
+    #net.show { display: block; }
   </style>
 </head>
 <body>
-  <div id="loading">
+  <div id="loading" role="status" aria-live="polite">
     <img src="icon-192.png" alt="">
     <div>一先生ポータル</div>
-    <div><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div class="en">ICHI SENSEI STUDY PORTAL</div>
+    <div aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
   </div>
   <iframe id="app" title="一先生ポータル" allow="clipboard-write"></iframe>
+  <div id="net" role="status" aria-live="polite">オフラインです。通信が戻ると自動で再読み込みします。</div>
+
   <script>
+  (function () {
     // 本体（Google Apps Script のウェブアプリ）のURL
     var APP_URL = 'https://script.google.com/macros/s/AKfycbzaszKilV1E-O9l8UOxnKmcBXsWLnGQBojXi4VMWdAYRuWjHpCbYVDo2Crlyn3DOEXK/exec';
-    // このページのURLの後ろ（?teacher や ?key=… など）をそのまま本体に渡す
-    var frame = document.getElementById('app');
-    frame.src = APP_URL + location.search;
-    frame.addEventListener('load', function () {
-      document.getElementById('loading').classList.add('hide');
-    });
-    setTimeout(function () { document.getElementById('loading').classList.add('hide'); }, 8000);
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(function () {});
+    var SAVED_KEY = 'ichi-portal:launch-query';
+
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+                     window.navigator.standalone === true;
+
+    // このページのURLの後ろ（?key=… や ?teacher など）をそのまま本体に渡す。
+    // ホーム画面のアプリとして起動したときだけ、その端末内に保存しておき、
+    // 万一 ?key が付かずに起動した場合に補う（ブラウザで開いたときは保存も復元もしない）。
+    var query = location.search;
+    try {
+      if (standalone) {
+        if (query) localStorage.setItem(SAVED_KEY, query);
+        else query = localStorage.getItem(SAVED_KEY) || '';
+      }
+    } catch (e) { /* プライベートモード等で保存できなくても動作は続ける */ }
+
+    // iPhone で入力欄を選んだときの自動ズームを防ぐ（iOS はピンチ操作のズームは引き続き可能）
+    if (/iP(hone|ad|od)/.test(navigator.userAgent)) {
+      document.querySelector('meta[name=viewport]').setAttribute('content',
+        'width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover');
     }
+
+    var frame = document.getElementById('app');
+    var loading = document.getElementById('loading');
+    var net = document.getElementById('net');
+    function hideLoading() { loading.classList.add('hide'); }
+    function load() { frame.src = APP_URL + query; }
+
+    frame.addEventListener('load', hideLoading);
+    setTimeout(hideLoading, 8000);
+
+    // 起動時にオフラインならオフライン画面へ
+    if (navigator.onLine === false) { location.replace('offline.html' + query); return; }
+    load();
+
+    var wentOffline = false;
+    window.addEventListener('offline', function () { wentOffline = true; net.classList.add('show'); });
+    window.addEventListener('online', function () {
+      net.classList.remove('show');
+      if (wentOffline) { wentOffline = false; load(); }
+    });
+
+    // Service Worker（入口ページの部品だけを扱う。学習データは扱わない）
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js', { scope: './', updateViaCache: 'none' }).then(function (reg) {
+          // アプリに戻ってきたときに更新を確認
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') reg.update().catch(function () {});
+          });
+        }).catch(function () {});
+      });
+    }
+  })();
   </script>
 </body>
 </html>

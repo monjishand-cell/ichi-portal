@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ホーム画面への追加方法｜一先生ポータル</title>
+  <meta name="theme-color" content="#1a3a5c">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>
+    :root { --navy:#1a3a5c; --wine:#5c1e34; --paper:#f7f5f0; --beige:#e8d6be; --ink:#2a2a2a; --muted:#6b6660; --line:#e4ded3; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.75 "Hiragino Sans","Noto Sans JP",system-ui,sans-serif; }
+    header { background:linear-gradient(135deg,var(--navy),var(--wine)); color:#fff; padding:calc(env(safe-area-inset-top) + 28px) 16px 28px; text-align:center; }
+    header img { width:72px; height:72px; border-radius:16px; box-shadow:0 6px 18px rgba(0,0,0,.3); }
+    header h1 { margin:12px 0 4px; font:600 22px/1.4 "Hiragino Mincho ProN","Noto Serif JP",serif; }
+    header p { margin:0; font-size:12px; letter-spacing:.2em; opacity:.75; }
+    main { max-width:640px; margin:0 auto; padding:20px 16px calc(env(safe-area-inset-bottom) + 40px); }
+    .note { background:#fff; border:1px solid var(--line); border-left:4px solid var(--wine); border-radius:10px; padding:14px 16px; margin:0 0 24px; }
+    .tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .tabs button { flex:1; min-height:48px; border:1px solid var(--line); background:#fff; border-radius:10px; font:600 16px system-ui,sans-serif; color:var(--navy); cursor:pointer; }
+    .tabs button[aria-selected=true] { background:var(--navy); color:#fff; border-color:var(--navy); }
+    section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:8px 16px 16px; }
+    section[hidden] { display:none; }
+    h2 { font-size:18px; margin:12px 0 4px; color:var(--navy); }
+    .req { color:var(--muted); font-size:14px; margin:0 0 8px; }
+    ol { padding-left:0; margin:0; list-style:none; counter-reset:s; }
+    ol li { counter-increment:s; position:relative; padding:12px 0 12px 44px; border-top:1px solid var(--line); }
+    ol li:first-child { border-top:0; }
+    ol li::before { content:counter(s); position:absolute; left:0; top:12px; width:30px; height:30px; border-radius:50%; background:var(--beige); color:var(--navy); font-weight:700; text-align:center; line-height:30px; }
+    .en { display:block; color:var(--muted); font-size:14px; line-height:1.6; }
+    kbd { font-family:inherit; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:0 6px; white-space:nowrap; }
+    h3 { font-size:16px; margin:28px 0 8px; color:var(--navy); }
+    dl { margin:0; } dt { font-weight:600; margin-top:12px; } dd { margin:2px 0 0; color:var(--muted); font-size:15px; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="icon-192.png" alt="">
+    <h1>ホーム画面への追加方法</h1>
+    <p>ADD TO HOME SCREEN</p>
+  </header>
+  <main>
+    <div class="note">
+      <strong>はじめに：先生から届いた「あなた専用のリンク」を開いてから追加してください。</strong>
+      <span class="en">First, open <b>your personal link</b> from Ichi Sensei (it ends with <kbd>?key=…</kbd>), then follow the steps below.</span>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" id="t-ios" aria-controls="ios" aria-selected="true">iPhone</button>
+      <button role="tab" id="t-and" aria-controls="android" aria-selected="false">Android</button>
+    </div>
+
+    <section id="ios" role="tabpanel" aria-labelledby="t-ios">
+      <h2>iPhone（Safari）</h2>
+      <p class="req">Safari で開いてください。LINE や Instagram の中のブラウザでは追加できません。<span class="en">Use Safari (not the browser inside LINE / Instagram, etc.).</span></p>
+      <ol>
+        <li>専用リンクを <b>Safari</b> で開きます。<span class="en">Open your personal link in Safari.</span></li>
+        <li><kbd>共有</kbd> ボタン（四角から上向き矢印が出ているマーク）をタップします。見当たらない場合は <kbd>…</kbd> をタップしてから <kbd>共有</kbd> を選びます。<span class="en">Tap the Share button (square with an up arrow). If you don't see it, tap “…” first, then “Share”.</span></li>
+        <li>メニューを下にスクロールして <kbd>ホーム画面に追加</kbd> をタップします。<span class="en">Scroll down and tap “Add to Home Screen”.</span></li>
+        <li>「Webアプリとして開く」がオンになっていることを確認し、右上の <kbd>追加</kbd> をタップします。<span class="en">Make sure “Open as Web App” is on, then tap “Add”.</span></li>
+        <li>ホーム画面の「一先生」アイコンから開くと、アドレスバーのないアプリとして表示されます。<span class="en">Open it from the “一先生” icon on your Home Screen.</span></li>
+      </ol>
+    </section>
+
+    <section id="android" role="tabpanel" aria-labelledby="t-and" hidden>
+      <h2>Android（Chrome）</h2>
+      <p class="req">Chrome で開いてください。<span class="en">Use Chrome.</span></p>
+      <ol>
+        <li>専用リンクを <b>Chrome</b> で開きます。<span class="en">Open your personal link in Chrome.</span></li>
+        <li>右上の <kbd>⋮</kbd>（メニュー）をタップします。<span class="en">Tap the ⋮ menu at the top right.</span></li>
+        <li><kbd>ホーム画面に追加</kbd> または <kbd>アプリをインストール</kbd> をタップします。<span class="en">Tap “Add to Home screen” or “Install app”.</span></li>
+        <li>確認画面で <kbd>インストール</kbd>（または <kbd>追加</kbd>）をタップします。<span class="en">Tap “Install” (or “Add”) to confirm.</span></li>
+        <li>ホーム画面またはアプリ一覧の「一先生」アイコンから開きます。<span class="en">Open it from the “一先生” icon.</span></li>
+      </ol>
+    </section>
+
+    <h3>こんなときは / Troubleshooting</h3>
+    <dl>
+      <dt>自分のページではなく、別の画面が出る</dt>
+      <dd>アイコンを長押しして削除し、専用リンクを開き直してからもう一度追加してください。<br>Delete the icon, open your personal link again, and add it again.</dd>
+      <dt>「インターネットに接続されていません」と出る</dt>
+      <dd>学習データはオンラインで読み込みます。通信できる場所で「もう一度読み込む」をタップしてください。<br>The portal needs an internet connection.</dd>
+      <dt>アイコンを削除したら、学習記録は消えますか？</dt>
+      <dd>消えません。XP・宿題などの記録は先生のサーバー側に保存されています。<br>No. Your XP and homework are saved online, not on your phone.</dd>
+    </dl>
+  </main>
+  <script>
+    var tabs = document.querySelectorAll('[role=tab]');
+    function show(id) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute('aria-controls') === id;
+        t.setAttribute('aria-selected', on);
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('aria-controls')); }); });
+    if (/Android/i.test(navigator.userAgent)) show('android');
+  </script>
+</body>
+</html>
